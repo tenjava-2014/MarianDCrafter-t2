@@ -11,7 +11,7 @@ public class CalculatorStringParser {
         this.input = input;
     }
 
-    public double calculate() {
+    public double calculate() throws CalculatorStringParserException {
         List<String> previousNumbers = new ArrayList<String>();
         List<Character> operators = new ArrayList<Character>();
         String currentNumber = "";
@@ -29,7 +29,12 @@ public class CalculatorStringParser {
 
         Double result = null;
         for (int i = 0; i < previousNumbers.size(); i++) {
-            double number = Double.parseDouble(previousNumbers.get(i));
+            double number;
+            try {
+                number = Double.parseDouble(previousNumbers.get(i));
+            } catch(NumberFormatException e) {
+                throw new CalculatorStringParserException("Could not parse a number.");
+            }
             if (result == null)
                 result = number;
             else if (operators.size() > i - 1) { // i-1, because we want to get the operator BEFORE the number
@@ -49,6 +54,9 @@ public class CalculatorStringParser {
                 }
             }
         }
+
+        if(result == null)
+            throw new CalculatorStringParserException("Could not parse the input.");
 
         return result;
     }

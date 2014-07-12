@@ -1,5 +1,6 @@
 package com.tenjava.entries.MarianDCrafter.t2.machines;
 
+import com.tenjava.entries.MarianDCrafter.t2.TenJava;
 import com.tenjava.entries.MarianDCrafter.t2.util.ItemStackUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -123,7 +124,12 @@ public class CalculatorSession implements Listener {
 
     private void calculate() {
         closedToUpdateInventory = true;
-        createInventory("§6" + String.valueOf(new CalculatorStringParser(input.toString()).calculate()));
+        try {
+            createInventory("§6" + String.valueOf(new CalculatorStringParser(input.toString()).calculate()));
+        } catch (CalculatorStringParserException e) {
+            stop();
+            player.sendMessage(TenJava.PREFIX_FAIL + e.getMessage());
+        }
         input = new StringBuilder();
     }
 
