@@ -5,3 +5,13 @@ version: '${project.version}'
 commands:
   calculator:
     description: Opens up a calculator view. (Costs something)
+
+permissions:
+  machines.*:
+    description: All Machines permissions.
+    default: op
+    children:
+      machines.calculator: true
+  machines.calculator:
+    description: Allows you to execute the calculator command.
+    default: op
