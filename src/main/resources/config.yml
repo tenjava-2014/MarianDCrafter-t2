@@ -1,8 +1,18 @@
 # driveMaterial can be any Material.
 # List of all Materials: http://jd.bukkit.org/rb/apidocs/org/bukkit/Material.html
 
+# delay can be any delay of: SECOND, MINUTE, HOUR
+
 machines:
   calculator:
     enabled: true
     driveMaterial: REDSTONE
-    materialPerSecond: 1
+    delay: SECOND
+    materialPerDelay: 1
+  bag:
+    enabled: true
+    driveMaterial: COAL
+    delayInBag: SECOND
+    materialPerDelayInBag: 1
+    delayOutsideBag: MINUTE
+    materialPerDelayOutsideBag: 1

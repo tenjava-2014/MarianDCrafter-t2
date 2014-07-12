@@ -17,14 +17,16 @@ public class CalculatorCommandExecutor implements CommandExecutor {
 
     private TenJava plugin;
     private Material driveMaterial;
-    private int materialPerSecond;
+    private Delay delay;
+    private int materialPerDelay;
     private Map<String, CalculatorSession> sessions = new HashMap<String, CalculatorSession>();
     private Map<String, Machine> machines = new HashMap<String, Machine>();
 
     public CalculatorCommandExecutor(TenJava plugin) {
         this.plugin = plugin;
         driveMaterial = Material.getMaterial(plugin.getConfig().getString("machines.calculator.driveMaterial"));
-        materialPerSecond = plugin.getConfig().getInt("machines.calculator.materialPerSecond");
+        delay = Delay.valueOf(plugin.getConfig().getString("machines.calculator.delay"));
+        materialPerDelay = plugin.getConfig().getInt("machines.calculator.materialPerDelay");
     }
 
     /**
@@ -47,8 +49,8 @@ public class CalculatorCommandExecutor implements CommandExecutor {
             return true;
         }
 
-        if (!player.getInventory().contains(driveMaterial, materialPerSecond)) {
-            sender.sendMessage(TenJava.PREFIX_FAIL + "You need at least " + materialPerSecond + " " + driveMaterial + " for this command.");
+        if (!player.getInventory().contains(driveMaterial, materialPerDelay)) {
+            sender.sendMessage(TenJava.PREFIX_FAIL + "You need at least " + materialPerDelay + " " + driveMaterial + " for this command.");
             return true;
         }
 
@@ -59,14 +61,14 @@ public class CalculatorCommandExecutor implements CommandExecutor {
         Bukkit.getPluginManager().registerEvents(session, plugin);
         session.start();
 
-        Machine machine = new Machine(plugin, player, driveMaterial, materialPerSecond, Delay.SECOND, new Runnable() {
+        Machine machine = new Machine(plugin, player, driveMaterial, materialPerDelay, delay, new Runnable() {
             @Override
             public void run() {
                 if (!sessions.get(name).isRunning())
                     remove(name);
 
-                if (!player.getInventory().contains(driveMaterial, materialPerSecond)) {
-                    player.sendMessage(TenJava.PREFIX_FAIL + "You don't have " + materialPerSecond + " " + driveMaterial + ".");
+                if (!player.getInventory().contains(driveMaterial, materialPerDelay)) {
+                    player.sendMessage(TenJava.PREFIX_FAIL + "You don't have " + materialPerDelay + " " + driveMaterial + ".");
                     remove(name);
                 }
             }
