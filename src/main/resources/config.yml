@@ -18,14 +18,14 @@ machines:
     materialPerDelayOutsideBag: 1
   itemchanger:
     enabled: true
-    1:
+    0:
       from: GOLD_INGOT 2
       to: DIAMOND 1
       delay: SECOND
       delayTime: 10
       materialPerDelay: 4
       driveMaterial: COAL
-    2:
+    1:
       from: DIAMOND 1
       to: EMERALD 1
       delay: SECOND

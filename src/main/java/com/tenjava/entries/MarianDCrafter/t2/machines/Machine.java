@@ -1,5 +1,6 @@
 package com.tenjava.entries.MarianDCrafter.t2.machines;
 
+import com.tenjava.entries.MarianDCrafter.t2.util.ItemStackUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -64,25 +65,8 @@ public class Machine {
                 }
 
                 runnable.run();
+                ItemStackUtils.removeItem(player, driveMaterial, materialPerDelay);
 
-                PlayerInventory inventory = player.getInventory();
-                ItemStack[] contents = inventory.getContents();
-                int remove = materialPerDelay;
-                for (int i = 0; i < contents.length; i++) {
-                    if (contents[i] != null && contents[i].getType() == driveMaterial) { // only execute if it's the driveMaterial
-                        int amount = contents[i].getAmount() - remove;
-                        if (amount > 0) { // in the ItemStack is enough material to remove
-                            contents[i].setAmount(contents[i].getAmount() - remove);
-                            break;
-                        } else if (amount == 0) { // if the amount is 0, we need to remove the item instead of set amount to 0
-                            inventory.setItem(i, null);
-                            break;
-                        } else {
-                            contents[i].setAmount(0);
-                            remove = Math.abs(amount);
-                        }
-                    }
-                }
             }
         }, delay.getTicks(), delay.getTicks());
     }

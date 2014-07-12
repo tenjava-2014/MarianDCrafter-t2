@@ -8,7 +8,7 @@ public class ItemChanger {
 
     public final static String CONVERSATION_PROMPT_TEXT = "§3'stop' §bto stop the ItemChanger\n" +
             "§3'list' §bto see all possible ItemChangers\n" +
-            "§3'#' §bstart an ItemChanger with the given ID";
+            "§3'#' §bstart an ItemChanger with the given ID\n";
 
     private ItemStack from, to;
     private Delay delay;
@@ -30,4 +30,27 @@ public class ItemChanger {
                 "Every " + delay + " " + materialPerDelay + " " + driveMaterial + ". " + delay + "s for 1 item change: " + delayTime;
     }
 
+    public ItemStack getFrom() {
+        return from;
+    }
+
+    public ItemStack getTo() {
+        return to;
+    }
+
+    public Delay getDelay() {
+        return delay;
+    }
+
+    public int getDelayTime() {
+        return delayTime;
+    }
+
+    public int getMaterialPerDelay() {
+        return materialPerDelay;
+    }
+
+    public Material getDriveMaterial() {
+        return driveMaterial;
+    }
 }
