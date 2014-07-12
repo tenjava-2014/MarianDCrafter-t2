@@ -12,12 +12,17 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 @SuppressWarnings("unused")
 public class BagCommandExecutor implements CommandExecutor, Listener {
@@ -29,12 +34,15 @@ public class BagCommandExecutor implements CommandExecutor, Listener {
     private int materialPerDelayOutsideBag;
 
     private TenJava plugin;
-    private FileConfiguration bagFile;
+    private FileConfiguration bagFileConf;
+    private File bagFile;
     private Map<String, BagInventory> inventories = new HashMap<String, BagInventory>();
     private Map<String, Machine> machines = new HashMap<String, Machine>();
+    private Set<String> playersInBag = new HashSet<String>();
 
-    public BagCommandExecutor(TenJava plugin, FileConfiguration bagFile) {
+    public BagCommandExecutor(TenJava plugin, FileConfiguration bagFileConf, File bagFile) {
         this.plugin = plugin;
+        this.bagFileConf = bagFileConf;
         this.bagFile = bagFile;
 
         this.driveMaterial = Material.getMaterial(plugin.getConfig().getString("machines.bag.driveMaterial"));
@@ -48,7 +56,7 @@ public class BagCommandExecutor implements CommandExecutor, Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        if(bagFile.contains(event.getPlayer().getUniqueId().toString())) {
+        if(bagFileConf.contains(event.getPlayer().getUniqueId().toString())) {
             createBagFromConfig(event.getPlayer());
         }
     }
@@ -63,28 +71,52 @@ public class BagCommandExecutor implements CommandExecutor, Listener {
         remove(event.getPlayer());
     }
 
+    @EventHandler
+    public void inventoryClosed(final InventoryCloseEvent event) {
+        if(playersInBag.contains(event.getPlayer().getName())) {
+            final Player player = (Player)event.getPlayer();
+            machines.get(player.getName()).change(materialPerDelayOutsideBag, delayOutsideBag, new Runnable() {
+                @Override
+                public void run() {
+                    if (!player.getInventory().contains(driveMaterial, materialPerDelayOutsideBag)) {
+                        player.sendMessage(TenJava.PREFIX_FAIL + "You don't have " + materialPerDelayOutsideBag + " " + driveMaterial + ". Delete Bag...");
+                        removeDeleteInventory(player);
+                    }
+                }
+            });
+        }
+    }
+
     private void remove(Player player) {
         String name = player.getName();
         if(inventories.containsKey(name)) {
-            bagFile.set(player.getUniqueId().toString(), inventories.get(name));
+            bagFileConf.set(player.getUniqueId().toString(), inventories.get(name));
+            try {
+                bagFileConf.save(bagFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             inventories.remove(name);
         }
         if(machines.containsKey(name)) {
             machines.get(name).cancel();
             machines.remove(name);
         }
+        playersInBag.remove(name);
     }
 
     private void removeDeleteInventory(Player player) {
         String name = player.getName();
         if(inventories.containsKey(name)) {
-            bagFile.set(player.getUniqueId().toString(), null);
+            bagFileConf.set(player.getUniqueId().toString(), null);
             inventories.remove(name);
         }
         if(machines.containsKey(name)) {
             machines.get(name).cancel();
             machines.remove(name);
         }
+        playersInBag.remove(name);
+        player.closeInventory();
     }
 
     @Override
@@ -117,6 +149,7 @@ public class BagCommandExecutor implements CommandExecutor, Listener {
                     }
                 }
             });
+            playersInBag.add(name);
         } else {
             Bukkit.getPluginManager().registerEvents(new BagCreateInventory(player, new Runnable() {
                 @Override
@@ -138,17 +171,17 @@ public class BagCommandExecutor implements CommandExecutor, Listener {
     }
 
     private void createBagFromConfig(Player player) {
-        BagInventory inventory = new BagInventory((Map<String, Object>) bagFile.get(player.getUniqueId().toString()));
+        BagInventory inventory = new BagInventory((Map<String, Object>) bagFileConf.get(player.getUniqueId().toString()));
         inventory.serialized(player);
         start(player, inventory);
     }
 
     private void start(final Player player, BagInventory inventory) {
         inventories.put(player.getName(), inventory);
-        Machine machine = new Machine(plugin, player, driveMaterial, materialPerDelayInBag, delayInBag, new Runnable() {
+        Machine machine = new Machine(plugin, player, driveMaterial, materialPerDelayOutsideBag, delayOutsideBag, new Runnable() {
             @Override
             public void run() {
-                if (!player.getInventory().contains(driveMaterial, materialPerDelayInBag)) {
+                if (!player.getInventory().contains(driveMaterial, materialPerDelayOutsideBag)) {
                     player.sendMessage(TenJava.PREFIX_FAIL + "You don't have " + materialPerDelayInBag + " " + driveMaterial + ". Delete Bag...");
                     removeDeleteInventory(player);
                 }

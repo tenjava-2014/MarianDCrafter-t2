@@ -5,6 +5,7 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class BagInventory implements ConfigurationSerializable {
@@ -31,7 +32,10 @@ public class BagInventory implements ConfigurationSerializable {
 
     @Override
     public Map<String, Object> serialize() {
-        return null;
+        Map<String, Object> map = new HashMap<String, Object>();
+        for(int i = 0; i < inventory.getContents().length; inventory.getContents())
+            map.put(Integer.toString(i), inventory.getContents()[i]);
+        return map;
     }
 
     public Inventory getInventory() {

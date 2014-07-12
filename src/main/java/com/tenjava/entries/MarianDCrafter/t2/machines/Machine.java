@@ -58,6 +58,11 @@ public class Machine {
         task = Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
             @Override
             public void run() {
+                if(!player.isOnline()) {
+                    cancel();
+                    return;
+                }
+
                 runnable.run();
 
                 PlayerInventory inventory = player.getInventory();
