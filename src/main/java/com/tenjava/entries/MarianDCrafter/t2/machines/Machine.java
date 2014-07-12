@@ -87,6 +87,18 @@ public class Machine {
      */
     public void cancel() {
         task.cancel();
+        task = null;
+    }
+
+    public void change(int materialPerDelay, Delay delay, Runnable runnable) {
+        this.materialPerDelay = materialPerDelay;
+        this.delay = delay;
+        this.runnable = runnable;
+
+        if(task != null) {
+            task.cancel();
+            start();
+        }
     }
 
 }

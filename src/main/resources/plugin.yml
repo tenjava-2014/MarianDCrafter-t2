@@ -5,6 +5,8 @@ version: '${project.version}'
 commands:
   calculator:
     description: Opens up a calculator view. (Costs something)
+  bag:
+    description: Opens the bag. (Costs something)
 
 permissions:
   machines.*:
@@ -14,4 +16,7 @@ permissions:
       machines.calculator: true
   machines.calculator:
     description: Allows you to execute the calculator command.
+    default: op
+  machines.bag:
+    description: Allows you to execute the bag command.
     default: op
