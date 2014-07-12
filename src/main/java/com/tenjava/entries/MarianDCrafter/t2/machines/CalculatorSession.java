@@ -1,5 +1,6 @@
 package com.tenjava.entries.MarianDCrafter.t2.machines;
 
+import com.tenjava.entries.MarianDCrafter.t2.util.ItemStackUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -10,9 +11,8 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
+@SuppressWarnings("unused")
 public class CalculatorSession implements Listener {
 
     private StringBuilder input = new StringBuilder();
@@ -25,7 +25,7 @@ public class CalculatorSession implements Listener {
 
     @EventHandler
     public void close(InventoryCloseEvent event) {
-        if(event.getPlayer() == player) {
+        if (event.getPlayer() == player) {
             stop();
             unregisterListener();
         }
@@ -48,36 +48,26 @@ public class CalculatorSession implements Listener {
     public void start() {
         inventory = Bukkit.createInventory(player, 54, "§3§lCalculator");
 
-        ItemStack plus = new ItemStack(Material.STAINED_CLAY, 1, (short) 1);
-        ItemMeta plusMeta = plus.getItemMeta();
-        plusMeta.setDisplayName("§a§l+");
-        plus.setItemMeta(plusMeta);
+        inventory.setItem(2, ItemStackUtils.itemStack(Material.STAINED_CLAY, 1, (short) 1, "§a+", "Addition"));
+        inventory.setItem(3, ItemStackUtils.itemStack(Material.STAINED_CLAY, 1, (short) 2, "§a-", "Subtraction"));
+        inventory.setItem(5, ItemStackUtils.itemStack(Material.STAINED_CLAY, 1, (short) 3, "§a\u00D7", "Multiplication"));
+        inventory.setItem(6, ItemStackUtils.itemStack(Material.STAINED_CLAY, 1, (short) 4, "§a\u00F7", "Division"));
 
-        ItemStack minus = new ItemStack(Material.STAINED_CLAY, 1, (short) 2);
-        ItemMeta minusMeta = minus.getItemMeta();
-        minusMeta.setDisplayName("§a§l-");
-        minus.setItemMeta(minusMeta);
-
-        ItemStack multiplication = new ItemStack(Material.STAINED_CLAY, 1, (short) 3);
-        ItemMeta multiplicationMeta = multiplication.getItemMeta();
-        multiplicationMeta.setDisplayName("§a§l\u00D7");
-        multiplication.setItemMeta(multiplicationMeta);
-
-        ItemStack divide = new ItemStack(Material.STAINED_CLAY, 1, (short) 4);
-        ItemMeta divideMeta = divide.getItemMeta();
-        divideMeta.setDisplayName("§a§l\u00F7");
-        divide.setItemMeta(divideMeta);
-
-        inventory.setItem(2, plus);
-        inventory.setItem(3, minus);
-        inventory.setItem(5, multiplication);
-        inventory.setItem(6, divide);
+        inventory.setItem(21, ItemStackUtils.itemStack(Material.WOOL, 1, (short) 5, "§d1"));
+        inventory.setItem(22, ItemStackUtils.itemStack(Material.WOOL, 2, (short) 6, "§d2"));
+        inventory.setItem(23, ItemStackUtils.itemStack(Material.WOOL, 3, (short) 7, "§d3"));
+        inventory.setItem(30, ItemStackUtils.itemStack(Material.WOOL, 4, (short) 8, "§d4"));
+        inventory.setItem(31, ItemStackUtils.itemStack(Material.WOOL, 5, (short) 9, "§d5"));
+        inventory.setItem(32, ItemStackUtils.itemStack(Material.WOOL, 6, (short) 10, "§d6"));
+        inventory.setItem(39, ItemStackUtils.itemStack(Material.WOOL, 7, (short) 11, "§d7"));
+        inventory.setItem(40, ItemStackUtils.itemStack(Material.WOOL, 8, (short) 12, "§d8"));
+        inventory.setItem(41, ItemStackUtils.itemStack(Material.WOOL, 9, (short) 13, "§d9"));
 
         player.openInventory(inventory);
     }
 
     public void stop() {
-        if(player.getOpenInventory() == inventory)
+        if (player.getOpenInventory() == inventory)
             player.closeInventory();
     }
 
