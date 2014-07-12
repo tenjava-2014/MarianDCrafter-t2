@@ -20,6 +20,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Manages all ItemChanges and the running Machines
+ */
 public class ItemChangerCommandExecutor implements CommandExecutor, Listener {
 
     private TenJava plugin;
@@ -80,6 +83,12 @@ public class ItemChangerCommandExecutor implements CommandExecutor, Listener {
         return true;
     }
 
+    /**
+     * Returns the new prompt
+     * @param input the input String
+     * @param conversable the Conversable (Player)
+     * @return the new prompt, null if there is no new prompt
+     */
     public Prompt getPrompt(String input, Conversable conversable) {
         if (input.equals("stop"))
             return null;
@@ -97,6 +106,12 @@ public class ItemChangerCommandExecutor implements CommandExecutor, Listener {
         }
     }
 
+    /**
+     * Starts a new 'Session'.
+     * @param index the index of the ItemChanges in the list
+     * @param player the player
+     * @return An error String, if there is an error
+     */
     public String start(int index, final Player player) {
         if (itemChangers.size() <= index) // ItemChanger not contained
             return "An ItemChanger with this id doesn't exist.";

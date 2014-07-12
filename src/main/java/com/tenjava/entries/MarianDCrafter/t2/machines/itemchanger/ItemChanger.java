@@ -4,6 +4,9 @@ import com.tenjava.entries.MarianDCrafter.t2.machines.Delay;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+/**
+ * Represents the ItemChanger, with all his attributes like from-Material, to-Material etc.
+ */
 public class ItemChanger {
 
     public final static String CONVERSATION_PROMPT_TEXT = "§3'stop' §bto stop the ItemChanger\n" +
