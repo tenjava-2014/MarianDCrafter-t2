@@ -40,3 +40,10 @@ Calculator
 ----------
 - Type '/calculator' to open the calculator view
 - Click the numbers and operators to calculate the result
+- Material is needed for the Calculator
+
+Bag
+---
+- Type '/bag' to create a new bag or open the bag if you have already created one.
+- Material is needed for the Bag
+- The Bag will be saved in bags.yml
