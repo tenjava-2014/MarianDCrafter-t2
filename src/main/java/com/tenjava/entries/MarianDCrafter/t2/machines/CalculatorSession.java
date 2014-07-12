@@ -62,6 +62,9 @@ public class CalculatorSession implements Listener {
         inventory.setItem(39, ItemStackUtils.itemStack(Material.WOOL, 7, (short) 11, "§d7"));
         inventory.setItem(40, ItemStackUtils.itemStack(Material.WOOL, 8, (short) 12, "§d8"));
         inventory.setItem(41, ItemStackUtils.itemStack(Material.WOOL, 9, (short) 13, "§d9"));
+        inventory.setItem(48, ItemStackUtils.itemStack(Material.WOOL, 1, (short) 14, "§d0"));
+
+        inventory.setItem(50, ItemStackUtils.itemStack(Material.BOOK, 1, (short) 15, "§c="));
 
         player.openInventory(inventory);
     }
