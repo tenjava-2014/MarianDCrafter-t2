@@ -1,4 +1,4 @@
-package com.tenjava.entries.MarianDCrafter.t2.machines;
+package com.tenjava.entries.MarianDCrafter.t2.machines.calculator;
 
 import com.tenjava.entries.MarianDCrafter.t2.TenJava;
 import com.tenjava.entries.MarianDCrafter.t2.util.ItemStackUtils;
@@ -15,8 +15,16 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 
 @SuppressWarnings("unused")
+/**
+ * Represents a calculator session.
+ * Must be registered as a listener to work.
+ * Creates the inventory, closes it automatically and calculates the result.
+ */
 public class CalculatorSession implements Listener {
 
+    /**
+     * The slots in the inventory.
+     */
     private final static int
             SLOT_ADDITION = 2,
             SLOT_SUBTRACTION = 3,
@@ -35,40 +43,75 @@ public class CalculatorSession implements Listener {
             SLOT_POINT = 49,
             SLOT_CALCULATE = 50;
 
+    /**
+     * The input StringBuilder.
+     */
     private StringBuilder input = new StringBuilder();
+    /**
+     * The player who started this session.
+     */
     private Player player;
+    /**
+     * The inventory used for the calculator.
+     */
     private Inventory inventory;
+    /**
+     * This prevents the method unregisterListener from unregister the listener.
+     * Set to true, if the inventory has changed.
+     */
     private boolean closedToUpdateInventory = false;
+    /**
+     * {@code true}, if the session is running, {@code false} otherwise
+     */
+    private boolean running = false;
 
+    /**
+     * Initializes the session with the given player.
+     */
     public CalculatorSession(Player player) {
         this.player = player;
     }
 
+    /**
+     * Called when a player closes an inventory.
+     * Used to stop the session.
+     */
     @EventHandler
     public void close(InventoryCloseEvent event) {
-        if (event.getPlayer() == player) {
+        if (event.getPlayer() == player)
             stop();
-            unregisterListener();
-        }
     }
 
+    /**
+     * Called when the player leaves the server.
+     * Used to stop the session.
+     */
     @EventHandler
     public void leave(PlayerQuitEvent event) {
-        unregisterListener();
+        if (event.getPlayer() == player)
+            stop();
     }
 
+    /**
+     * Called when the player is kicked from the server.
+     * Used to stop the session.
+     */
     @EventHandler
     public void kick(PlayerKickEvent event) {
-        unregisterListener();
+        if (event.getPlayer() == player)
+            stop();
     }
 
+    /**
+     * Called when a player clicks in his inventory.
+     * Used to add the terms to the input string and calculate the result.
+     */
     @EventHandler
     public void inventoryClick(InventoryClickEvent event) {
         if (event.getWhoClicked() != player ||
                 event.getSlot() != event.getRawSlot()) // because then the player has clicked into his inventory
             return;
-        if (event.getInventory() != inventory)
-            stop();
+
         switch (event.getSlot()) {
             case SLOT_ADDITION:
                 append("+");
@@ -122,36 +165,76 @@ public class CalculatorSession implements Listener {
         event.setCancelled(true);
     }
 
+    /**
+     * Calculates the result.
+     * If there is an error, the session is stopped.
+     */
     private void calculate() {
-        closedToUpdateInventory = true;
         try {
             createInventory("§6" + String.valueOf(new CalculatorStringParser(input.toString()).calculate()));
+            input = new StringBuilder();
+            closedToUpdateInventory = true; //Only set to true if the don't want to stop the session.
         } catch (CalculatorStringParserException e) {
             stop();
             player.sendMessage(TenJava.PREFIX_FAIL + e.getMessage());
         }
-        input = new StringBuilder();
     }
 
+    /**
+     * Starts this session and creates the inventory.
+     */
     public void start() {
         createInventory("§3§lCalculator");
+        running = true;
     }
 
+    /**
+     * Stops this session.
+     * Closes the inventory and unregister the listener.
+     */
     public void stop() {
-        if (player.getOpenInventory() == inventory)
+        if (!closedToUpdateInventory && running) { // && running, to prevent circle stop() -> closeInventory() -> InventoryCloseEvent -> stop() -> ...
+            running = false;
             player.closeInventory();
+            unregisterListener();
+        } else
+            closedToUpdateInventory = false;
     }
 
+    /**
+     * Appends the given string to the input string.
+     * Changes the inventory to a new inventory with a new name.
+     *
+     * @param append the string to append
+     */
     public void append(String append) {
         input.append(append);
         closedToUpdateInventory = true;
         createInventory("§3" + input.toString());
     }
 
+    /**
+     * Returns the input string.
+     *
+     * @return the input string
+     */
     public String getInput() {
         return input.toString();
     }
 
+    /**
+     * Returns whether the session is currently running.
+     *
+     * @return {@code true}, if the session is running, {@code false} otherwise
+     */
+    public boolean isRunning() {
+        return running;
+    }
+
+    /**
+     * Unregister the listener.
+     * If closedToUpdateInventory is set to true, the listener is not unregistered and set to false.
+     */
     private void unregisterListener() {
         if (!closedToUpdateInventory)
             HandlerList.unregisterAll(this);
@@ -159,6 +242,11 @@ public class CalculatorSession implements Listener {
             closedToUpdateInventory = false;
     }
 
+    /**
+     * Creates a new inventory.
+     *
+     * @param name the name of the inventory
+     */
     private void createInventory(String name) {
         inventory = Bukkit.createInventory(player, 54, name);
 

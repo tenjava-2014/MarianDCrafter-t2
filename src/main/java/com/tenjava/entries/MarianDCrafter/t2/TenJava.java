@@ -1,6 +1,6 @@
 package com.tenjava.entries.MarianDCrafter.t2;
 
-import com.tenjava.entries.MarianDCrafter.t2.machines.Calculator;
+import com.tenjava.entries.MarianDCrafter.t2.machines.calculator.CalculatorCommandExecutor;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class TenJava extends JavaPlugin {
@@ -10,6 +10,8 @@ public class TenJava extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        getCommand("calculator").setExecutor(new Calculator(this));
+        saveDefaultConfig();
+        if(getConfig().getBoolean("machines.calculator.enabled"))
+            getCommand("calculator").setExecutor(new CalculatorCommandExecutor(this));
     }
 }

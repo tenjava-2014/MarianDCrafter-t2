@@ -1,16 +1,28 @@
-package com.tenjava.entries.MarianDCrafter.t2.machines;
+package com.tenjava.entries.MarianDCrafter.t2.machines.calculator;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Parses an input string and calculates the result.
+ */
 public class CalculatorStringParser {
 
     private String input;
 
+    /**
+     * Initializes the CalculatorStringParser with the input string.
+     * @param input the input string.
+     */
     public CalculatorStringParser(String input) {
         this.input = input;
     }
 
+    /**
+     * Parses the input string and calculates the result.
+     * @return the result
+     * @throws CalculatorStringParserException if there is an error with parsing the string.
+     */
     public double calculate() throws CalculatorStringParserException {
         List<String> previousNumbers = new ArrayList<String>();
         List<Character> operators = new ArrayList<Character>();
