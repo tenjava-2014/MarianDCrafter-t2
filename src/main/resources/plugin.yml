@@ -7,6 +7,8 @@ commands:
     description: Opens up a calculator view. (Costs something)
   bag:
     description: Opens the bag. (Costs something)
+  itemchanger:
+    description: Starts the itemchanger conversation.
 
 permissions:
   machines.*:
@@ -19,4 +21,7 @@ permissions:
     default: op
   machines.bag:
     description: Allows you to execute the bag command.
+    default: op
+  machines.itemchanger:
+    description: Allows you to execute the itemchanger command.
     default: op
