@@ -1,0 +1,8 @@
+# driveMaterial can be any Material.
+# List of all Materials: http://jd.bukkit.org/rb/apidocs/org/bukkit/Material.html
+
+machines:
+  calculator:
+    enabled: true
+    driveMaterial: REDSTONE
+    materialPerSecond: 1

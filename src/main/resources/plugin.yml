@@ -1,3 +1,7 @@
 name: MarianDCrafter-t2
 main: com.tenjava.entries.MarianDCrafter.t2.TenJava
 version: '${project.version}'
+
+commands:
+  calculator:
+    description: Opens up a calculator view. (Costs something)
